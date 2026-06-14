@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Inter, Playfair_Display } from "next/font/google";
+import { Inter, Playfair_Display, Marcellus } from "next/font/google";
 import "./globals.css";
 
 const inter = Inter({
@@ -9,6 +9,12 @@ const inter = Inter({
 
 const playfair = Playfair_Display({
   variable: "--font-playfair",
+  subsets: ["latin"],
+});
+
+const marcellus = Marcellus({
+  weight: "400",
+  variable: "--font-marcellus",
   subsets: ["latin"],
 });
 
@@ -25,7 +31,7 @@ export default function RootLayout({
   return (
     <html lang="pt-BR" className="scroll-smooth">
       <body
-        className={`${inter.variable} ${playfair.variable} antialiased bg-off-white text-black-absolute font-sans`}
+        className={`${inter.variable} ${playfair.variable} ${marcellus.variable} antialiased bg-off-white text-black-absolute font-sans`}
       >
         {children}
       </body>

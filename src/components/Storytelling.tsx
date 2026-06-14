@@ -26,22 +26,21 @@ export default function Storytelling() {
           transition={{ duration: 1 }}
           className="w-full max-w-4xl flex flex-col items-center justify-center text-center"
         >
-          <h2 className="font-serif text-4xl md:text-5xl lg:text-6xl text-white font-light tracking-wide mb-8 leading-tight drop-shadow-lg">
-            Mais que um relógio. <br />
-            <span className="italic font-extralight tracking-wider text-white/90">Uma assinatura silenciosa.</span>
+          <h2 className="font-serif text-3xl md:text-4xl lg:text-5xl text-white font-light tracking-wide mb-8 leading-tight drop-shadow-lg transition-all duration-700 ease-out hover:scale-[1.02] hover:text-champagne-gold hover:drop-shadow-[0_0_30px_rgba(200,169,106,0.5)] cursor-default">
+            Mais que um relógio. <span className="italic font-extralight tracking-wider text-white/90 transition-colors duration-500">Uma assinatura silenciosa.</span>
           </h2>
           
-          <p className="text-white/80 text-lg md:text-xl font-light leading-relaxed mb-10 max-w-2xl drop-shadow-md">
+          <p className="text-white/80 text-lg md:text-xl font-light leading-relaxed mb-10 max-w-2xl drop-shadow-md transition-all duration-500 hover:text-white hover:drop-shadow-[0_0_15px_rgba(255,255,255,0.4)] cursor-default">
             Cada peça carrega a presença de quem escolhe menos ruído e mais significado. Um objeto de precisão, desenhado para acompanhar decisões, encontros e momentos que definem trajetória.
           </p>
           
           <div className="flex flex-col sm:flex-row gap-6 md:gap-12 justify-center items-center">
-            <div className="flex items-center gap-4 text-sm text-white/90 tracking-widest uppercase font-light">
-              <span className="w-8 md:w-12 h-[1px] bg-white/60"></span>
-              Tradição desde 1924
+            <div className="flex items-center gap-4 text-sm text-white/90 tracking-widest uppercase font-light group cursor-default transition-all duration-500 hover:text-champagne-gold hover:scale-105">
+              <span className="w-8 md:w-12 h-[1px] bg-white/60 transition-all duration-500 group-hover:bg-champagne-gold group-hover:w-16"></span>
+              Tradição desde 2018
             </div>
-            <div className="flex items-center gap-4 text-sm text-white/90 tracking-widest uppercase font-light">
-              <span className="w-8 md:w-12 h-[1px] bg-white/60"></span>
+            <div className="flex items-center gap-4 text-sm text-white/90 tracking-widest uppercase font-light group cursor-default transition-all duration-500 hover:text-champagne-gold hover:scale-105">
+              <span className="w-8 md:w-12 h-[1px] bg-white/60 transition-all duration-500 group-hover:bg-champagne-gold group-hover:w-16"></span>
               Montagem Manual
             </div>
           </div>

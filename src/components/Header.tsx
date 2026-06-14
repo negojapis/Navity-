@@ -28,14 +28,14 @@ export default function Header() {
       initial={{ y: -100, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
       transition={{ duration: 0.8, ease: "easeOut" }}
-      className={`fixed top-8 w-full z-40 transition-all duration-500 ${
-        scrolled ? "bg-off-white/95 backdrop-blur-md py-4 shadow-[0_4px_30px_rgba(0,0,0,0.05)] border-b border-champagne-gold/20" : "bg-transparent py-6"
+      className={`fixed top-8 w-full z-40 transition-all duration-500 bg-transparent ${
+        scrolled ? "py-4" : "py-6"
       }`}
     >
       <div className="w-full px-6 md:px-16 lg:px-24 flex items-center justify-between">
         {/* Logo */}
         <Link href="/">
-          <span className={`font-serif text-3xl tracking-widest uppercase hover:text-champagne-gold transition-colors duration-300 ${scrolled ? 'text-black-absolute' : 'text-off-white'}`}>
+          <span className={`inline-block font-serif text-3xl tracking-widest uppercase transform hover:scale-110 hover:-translate-y-1 hover:text-champagne-gold hover:drop-shadow-[0_0_15px_rgba(200,169,106,0.5)] transition-all duration-300 ${scrolled ? 'text-black-absolute' : 'text-off-white'}`}>
             Navity
           </span>
         </Link>
@@ -46,7 +46,7 @@ export default function Header() {
             <Link
               key={link.name}
               href={link.href}
-              className={`text-sm tracking-widest uppercase hover:text-champagne-gold transition-colors duration-300 ${scrolled ? 'text-luxury-graphite' : 'text-off-white'}`}
+              className={`inline-block text-sm tracking-widest uppercase transform hover:scale-110 hover:-translate-y-1 hover:text-champagne-gold hover:drop-shadow-[0_0_10px_rgba(200,169,106,0.5)] transition-all duration-300 ${scrolled ? 'text-luxury-graphite' : 'text-off-white'}`}
             >
               {link.name}
             </Link>

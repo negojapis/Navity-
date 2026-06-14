@@ -3,6 +3,8 @@
 import { motion } from "framer-motion";
 import { useEffect, useRef } from "react";
 
+import { SparklesCore } from "./ui/sparkles";
+
 const watches = [
   {
     name: "Classic Date",
@@ -41,15 +43,30 @@ export default function Collection() {
   }, []);
 
   return (
-    <section id="collection" className="py-24 md:py-32 bg-white relative">
-      <div className="w-full mx-auto px-6 sm:px-12 lg:px-20 xl:px-32">
+    <section id="collection" className="py-24 md:py-32 bg-white relative overflow-hidden">
+      {/* Sparkles background covering the whole section */}
+      <div className="absolute inset-0 w-full h-full z-0 pointer-events-none" style={{ maskImage: "linear-gradient(to bottom, white 0%, white 95%, transparent)", WebkitMaskImage: "linear-gradient(to bottom, white 0%, white 95%, transparent)" }}>
+        <SparklesCore
+          background="transparent"
+          minSize={0.4}
+          maxSize={1.5}
+          particleDensity={300}
+          className="w-full h-full"
+          particleColor="#C8A96A"
+        />
+      </div>
+
+      {/* Subtle background glow */}
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[80%] h-[80%] bg-champagne-gold/5 blur-[150px] rounded-full z-0 pointer-events-none" />
+
+      <div className="relative z-20 w-full mx-auto px-6 sm:px-12 lg:px-20 xl:px-32">
         <div className="text-center mb-24">
           <motion.h2
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.8 }}
-            className="font-serif text-5xl md:text-6xl text-black-absolute mb-6"
+            className="font-serif text-4xl md:text-5xl lg:text-6xl text-black-absolute mb-6 uppercase tracking-tight hover:tracking-[0.15em] hover:text-champagne-gold transition-all duration-700 ease-in-out cursor-default"
           >
             Coleção Navity
           </motion.h2>

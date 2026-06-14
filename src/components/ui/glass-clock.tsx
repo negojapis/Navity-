@@ -2,26 +2,47 @@
 
 import React, { useEffect, useRef } from 'react';
 
+import { motion, useMotionValue, useTransform, useSpring } from 'framer-motion';
+
 export type SecondsMode = 'smooth' | 'tick1' | 'tick2' | 'highFreq';
 
-const BERLIN_TIMEZONE = 'Europe/Berlin';
+const BRASILIA_TIMEZONE = 'America/Sao_Paulo';
 
-const MONTH_NAMES = [
-  'Jan',
-  'Feb',
-  'Mar',
-  'Apr',
-  'May',
-  'Jun',
-  'Jul',
-  'Aug',
-  'Sep',
-  'Oct',
-  'Nov',
-  'Dec',
+const DAY_NAMES = [
+  'Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'
 ];
 
 export function GlassClock(): React.ReactElement {
+  // 3D Tilt state
+  const x = useMotionValue(0);
+  const y = useMotionValue(0);
+
+  const mouseXSpring = useSpring(x, { stiffness: 150, damping: 20 });
+  const mouseYSpring = useSpring(y, { stiffness: 150, damping: 20 });
+
+  const rotateX = useTransform(mouseYSpring, [-0.5, 0.5], ["15deg", "-15deg"]);
+  const rotateY = useTransform(mouseXSpring, [-0.5, 0.5], ["-15deg", "15deg"]);
+
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+    const rect = e.currentTarget.getBoundingClientRect();
+    const width = rect.width;
+    const height = rect.height;
+    
+    const mouseX = e.clientX - rect.left;
+    const mouseY = e.clientY - rect.top;
+    
+    const xPct = mouseX / width - 0.5;
+    const yPct = mouseY / height - 0.5;
+    
+    x.set(xPct);
+    y.set(yPct);
+  };
+
+  const handleMouseLeave = () => {
+    x.set(0);
+    y.set(0);
+  };
+
   const hourMarksRef = useRef<HTMLDivElement>(null);
   const glossyOverlayRef = useRef<HTMLDivElement>(null);
   const reflectionOverlayRef = useRef<HTMLDivElement>(null);
@@ -31,9 +52,6 @@ export function GlassClock(): React.ReactElement {
   const secondHandShadowRef = useRef<HTMLDivElement>(null);
   const dateRef = useRef<HTMLDivElement>(null);
   const timezoneRef = useRef<HTMLDivElement>(null);
-  const tweakpaneContainerRef = useRef<HTMLDivElement>(null);
-  const glassEdgeShadowRef = useRef<HTMLDivElement>(null);
-  const glassDarkEdgeRef = useRef<HTMLDivElement>(null);
   const glassEffectShadowRef = useRef<HTMLDivElement>(null);
 
   const requestAnimationRef = useRef<number | null>(null);
@@ -88,11 +106,12 @@ export function GlassClock(): React.ReactElement {
           hourNumber.style.left = `${left}px`;
           hourNumber.style.top = `${top}px`;
           hourNumber.textContent = hourIndex === 0 ? '12' : hourIndex.toString();
+          hourNumber.style.transform = `translate(-50%, -50%) translateZ(10px)`;
           container.appendChild(hourNumber);
         } else {
           const minuteMarker = document.createElement('div');
           minuteMarker.className = 'minute-marker';
-          minuteMarker.style.transform = `rotate(${i * 6}deg)`;
+          minuteMarker.style.transform = `rotate(${i * 6}deg) translateZ(5px)`;
           container.appendChild(minuteMarker);
         }
       }
@@ -100,27 +119,27 @@ export function GlassClock(): React.ReactElement {
 
     const updateHourAndMinuteHands = () => {
       const now = new Date();
-      const berlinString = now.toLocaleString('en-US', {
-        timeZone: BERLIN_TIMEZONE,
+      const brasiliaString = now.toLocaleString('en-US', {
+        timeZone: BRASILIA_TIMEZONE,
       });
-      const berlinTime = new Date(berlinString);
-      const hours = berlinTime.getHours() % 12;
-      const minutes = berlinTime.getMinutes();
+      const brasiliaTime = new Date(brasiliaString);
+      const hours = brasiliaTime.getHours() % 12;
+      const minutes = brasiliaTime.getMinutes();
       const minutesDegrees = minutes * 6;
       const hoursDegrees = hours * 30 + (minutes / 60) * 30;
 
       if (hourHandRef.current) {
-        hourHandRef.current.style.transform = `rotate(${hoursDegrees}deg)`;
+        hourHandRef.current.style.transform = `rotate(${hoursDegrees}deg) translateZ(20px)`;
       }
 
       if (minuteHandRef.current) {
-        minuteHandRef.current.style.transform = `rotate(${minutesDegrees}deg)`;
+        minuteHandRef.current.style.transform = `rotate(${minutesDegrees}deg) translateZ(25px)`;
       }
 
       if (dateRef.current) {
-        const month = MONTH_NAMES[berlinTime.getMonth()];
-        const day = berlinTime.getDate();
-        dateRef.current.textContent = `${month} ${day}`;
+        const day = brasiliaTime.getDate();
+        const dayOfWeek = DAY_NAMES[brasiliaTime.getDay()];
+        dateRef.current.textContent = `${dayOfWeek.toUpperCase()} ${day}`;
       }
 
       if (timezoneRef.current) {
@@ -132,9 +151,9 @@ export function GlassClock(): React.ReactElement {
       }
 
       const millisecondsUntilNextMinute =
-        (60 - berlinTime.getSeconds()) * 1000 - berlinTime.getMilliseconds();
+        (60 - brasiliaTime.getSeconds()) * 1000 - brasiliaTime.getMilliseconds();
 
-      hourMinuteTimeoutRef.current = window.setTimeout(
+      hourMinuteTimeoutRef.current = setTimeout(
         updateHourAndMinuteHands,
         Math.max(millisecondsUntilNextMinute, 0),
       );
@@ -143,12 +162,12 @@ export function GlassClock(): React.ReactElement {
     const applySecondHandRotation = (angle: number) => {
       if (secondHandContainerRef.current) {
         secondHandContainerRef.current.style.transition = 'none';
-        secondHandContainerRef.current.style.transform = `rotate(${angle}deg)`;
+        secondHandContainerRef.current.style.transform = `rotate(${angle}deg) translateZ(30px)`;
       }
 
       if (secondHandShadowRef.current) {
         secondHandShadowRef.current.style.transition = 'none';
-        secondHandShadowRef.current.style.transform = `rotate(${angle + 0.5}deg)`;
+        secondHandShadowRef.current.style.transform = `rotate(${angle + 0.5}deg) translateZ(15px)`;
       }
     };
 
@@ -229,63 +248,11 @@ export function GlassClock(): React.ReactElement {
       }
     };
 
-    const handleKeydown = (event: KeyboardEvent) => {
-      if (event.key === 'h' || event.key === 'H') {
-        const container = tweakpaneContainerRef.current;
-        if (!container) {
-          return;
-        }
-
-        container.style.display =
-          container.style.display === 'none' || container.style.display === ''
-            ? 'block'
-            : 'none';
-      }
-    };
-
     setInitialVariables();
     createHourMarks();
     initializeOverlays();
     updateHourAndMinuteHands();
     startSecondsAnimation('highFreq'); // Luxury watches usually have high frequency sweeps
-    document.addEventListener('keydown', handleKeydown);
-
-    type PaneApi = {
-      dispose: () => void;
-      refresh: () => void;
-      addFolder: (...args: unknown[]) => any;
-      addBinding: (...args: unknown[]) => any;
-      addButton: (...args: unknown[]) => any;
-    };
-
-    let paneInstance: PaneApi | null = null;
-
-    const initializeTweakpane = async () => {
-      if (!tweakpaneContainerRef.current) {
-        return;
-      }
-
-      try {
-        const tweakpaneModule = await import('tweakpane');
-        const { Pane } = tweakpaneModule as {
-          Pane: new (...args: any[]) => PaneApi;
-        };
-        const container = tweakpaneContainerRef.current;
-
-        paneInstance = new Pane({
-          container,
-          title: 'Clock Settings',
-        });
-
-        // Tweakpane logic is loaded but container is hidden by default for cleaner UI.
-        container.style.display = 'none';
-
-      } catch (error) {
-        console.error('Error initializing Tweakpane:', error);
-      }
-    };
-
-    initializeTweakpane();
 
     return () => {
       cancelSecondHandAnimation();
@@ -294,38 +261,34 @@ export function GlassClock(): React.ReactElement {
         clearTimeout(hourMinuteTimeoutRef.current);
       }
 
-      document.removeEventListener('keydown', handleKeydown);
-
-      if (paneInstance) {
-        paneInstance.dispose();
-      }
-
-      if (tweakpaneContainerRef.current) {
-        tweakpaneContainerRef.current.style.display = 'none';
-      }
-
       clearHourMarks();
     };
   }, []);
 
   return (
-    <div className="glass-clock-page relative flex justify-center items-center scale-[0.6] sm:scale-75 md:scale-100 transform origin-center">
-      <div className="glass-clock-container relative w-[350px] h-[350px]">
-        <div className="glass-effect-wrapper absolute inset-0 rounded-full border-[10px] border-[#FDFBF7] shadow-2xl">
+    <div className="glass-clock-page relative flex justify-center items-center scale-[0.6] sm:scale-75 md:scale-100 lg:scale-[1.25] transform origin-center" style={{ perspective: "1000px" }}>
+      <motion.div 
+        className="glass-clock-container relative w-[350px] h-[350px] cursor-grab active:cursor-grabbing"
+        style={{ rotateX, rotateY, transformStyle: "preserve-3d" }}
+        onMouseMove={handleMouseMove}
+        onMouseLeave={handleMouseLeave}
+      >
+        <div className="glass-effect-wrapper absolute inset-0 rounded-full border-[10px] border-[#FDFBF7] shadow-2xl" style={{ transformStyle: "preserve-3d" }}>
           <div
             className="glass-effect-shadow absolute inset-0 rounded-full"
             ref={glassEffectShadowRef}
             style={{ opacity: 'var(--outer-shadow-opacity)' }}
           />
-          <div className="glass-clock-face absolute inset-0 rounded-full bg-white overflow-hidden shadow-inner">
+          <div className="glass-clock-face absolute inset-0 rounded-full bg-white overflow-hidden shadow-inner" style={{ transformStyle: "preserve-3d" }}>
             <div
               className="glass-glossy-overlay absolute inset-0 pointer-events-none z-50"
               ref={glossyOverlayRef}
               id="glass-glossy-overlay"
+              style={{ transform: "translateZ(50px)" }}
             />
             <div className="glass-edge-highlight absolute inset-0 rounded-full border-[2px] border-white/50" />
             
-            <div className="clock-hour-marks absolute inset-0" ref={hourMarksRef} />
+            <div className="clock-hour-marks absolute inset-0" ref={hourMarksRef} style={{ transformStyle: "preserve-3d" }} />
             
             {/* Hands */}
             <div className="hour-hand clock-hand absolute left-1/2 top-1/2 w-[6px] h-[100px] bg-black origin-bottom -translate-x-1/2 -translate-y-[100px] rounded-full z-20" ref={hourHandRef} />
@@ -336,21 +299,19 @@ export function GlassClock(): React.ReactElement {
               <div className="second-hand-counterweight absolute left-1/2 top-1/2 w-[4px] h-[30px] bg-[#C8A96A] origin-top -translate-x-1/2 rounded-full" />
             </div>
 
-            <div className="clock-center-dot absolute left-1/2 top-1/2 w-[12px] h-[12px] bg-[#C8A96A] rounded-full -translate-x-1/2 -translate-y-1/2 z-40 border-2 border-black" />
+            <div className="clock-center-dot absolute left-1/2 top-1/2 w-[12px] h-[12px] bg-[#C8A96A] rounded-full -translate-x-1/2 -translate-y-1/2 z-40 border-2 border-black" style={{ transform: "translate(-50%, -50%) translateZ(40px)" }} />
             
-            <div className="clock-logo absolute top-20 left-1/2 -translate-x-1/2 z-10 flex flex-col items-center">
+            <div className="clock-logo absolute top-20 left-1/2 -translate-x-1/2 z-10 flex flex-col items-center" style={{ transform: "translateX(-50%) translateZ(5px)" }}>
               <span className="font-serif text-sm tracking-widest uppercase text-black-absolute">Navity</span>
             </div>
             
-            <div className="clock-date absolute right-16 top-1/2 -translate-y-1/2 border border-champagne-gold/30 px-2 py-1 text-[10px] font-mono tracking-widest text-black-absolute rounded bg-off-white/50 z-10" ref={dateRef} />
-            <div className="clock-timezone absolute bottom-20 left-1/2 -translate-x-1/2 text-[10px] uppercase tracking-widest text-luxury-graphite z-10" ref={timezoneRef}>
+            <div className="clock-date absolute right-16 top-1/2 -translate-y-1/2 border border-champagne-gold/30 px-2 py-1 text-[10px] font-mono tracking-widest text-black-absolute rounded bg-off-white/50 z-10" ref={dateRef} style={{ transform: "translateY(-50%) translateZ(8px)" }} />
+            <div className="clock-timezone absolute bottom-20 left-1/2 -translate-x-1/2 text-[10px] uppercase tracking-widest text-luxury-graphite z-10" ref={timezoneRef} style={{ transform: "translateX(-50%) translateZ(5px)" }}>
               Navity
             </div>
           </div>
         </div>
-      </div>
-
-      <div className="tweakpane-container fixed bottom-4 right-4 z-50" ref={tweakpaneContainerRef} />
+      </motion.div>
     </div>
   );
 }
