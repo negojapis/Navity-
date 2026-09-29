@@ -53,9 +53,14 @@ export default function Footer() {
 
         </div>
 
-        <div className="pt-8 border-t border-black-absolute/10 flex flex-col md:flex-row justify-between items-center gap-6 text-sm md:text-base text-luxury-graphite/70 font-light">
-          <p>© {new Date().getFullYear()} Navity. Todos os direitos reservados.</p>
-          <div className="flex gap-8 uppercase tracking-widest">
+        <div className="pt-8 border-t border-black-absolute/10 flex flex-col lg:flex-row justify-between items-center gap-6 text-sm md:text-base text-luxury-graphite/70 font-light">
+          <p className="lg:w-1/3 text-center lg:text-left">© {new Date().getFullYear()} Navity. Todos os direitos reservados.</p>
+          
+          <p className="lg:w-1/3 text-center">
+            Desenvolvido por <span className="text-black-absolute font-medium">Grace Code Systems</span>
+          </p>
+
+          <div className="lg:w-1/3 flex justify-center lg:justify-end gap-8 uppercase tracking-widest">
             <a href="#" className="relative group hover:text-black-absolute transition-colors duration-300">
               Termos
               <span className="absolute left-0 -bottom-1 w-0 h-[1px] bg-black-absolute transition-all duration-500 ease-out group-hover:w-full"></span>

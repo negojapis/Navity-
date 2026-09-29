@@ -33,12 +33,8 @@ export default function Header() {
       }`}
     >
       <div className="w-full px-6 md:px-16 lg:px-24 flex items-center justify-between">
-        {/* Logo */}
-        <Link href="/">
-          <span className={`inline-block font-serif text-3xl tracking-widest uppercase transform hover:scale-110 hover:-translate-y-1 hover:text-champagne-gold hover:drop-shadow-[0_0_15px_rgba(200,169,106,0.5)] transition-all duration-300 ${scrolled ? 'text-black-absolute' : 'text-off-white'}`}>
-            Navity
-          </span>
-        </Link>
+        {/* Espaço reservado para manter o alinhamento da direita intacto */}
+        <div className="w-10"></div>
 
         {/* Navigation - Desktop */}
         <nav className="hidden md:flex items-center gap-10">
